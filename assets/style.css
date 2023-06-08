@@ -1,0 +1,41 @@
+    #tabla-filtrada-pres button.export {
+        background-color: #4caf59;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+    
+    #tabla-filtrada-mun button.export {
+        background-color: #4caf59;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+    
+    #tabla-filtrada button.export {
+        background-color: #4caf59;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
