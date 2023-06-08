@@ -1,5 +1,5 @@
 import dash
-from dash import html, Input, Output, dash_table, dcc
+from dash import html, Input, Output, dash_table, dcc,State
 import pandas as pd
 #import bot_pre_mun as bpm
 from selenium import webdriver 
@@ -13,6 +13,10 @@ from selenium.webdriver.chrome.options import Options
 import time
 import pandas as pd
 import numpy as np
+import base64
+import io
+import urllib.parse
+
 ###
 def funciones_extraccion():
     def funcion_isaac():
@@ -899,7 +903,7 @@ estados_diputados_municipales = df_presidentes['Estado'].unique()
 
 # Crear la aplicación Dash
 app = dash.Dash(__name__, pages_folder="",suppress_callback_exceptions=True)
-
+server = app.server
 # Estilos CSS
 # Definir el estilo CSS para centrar la tabla y ajustar los filtros
 styles = {
@@ -921,8 +925,17 @@ styles = {
     },
     'filtro': {
         'marginRight': '10px'
+    },
+    'export': {
+        'position': 'absolute',
+        'right': '50%',
+        'fontFamily': 'sans-serif',
+        # Agrega aquí los demás estilos para la clase .export
     }
+    
+    
 }
+
 
 button_style = {
     'backgroundColor': '#4CAF50',
@@ -937,6 +950,7 @@ button_style = {
     'font-size': '16px',
     'cursor': 'pointer',
     'marginBottom': '20px'
+    
 }
 # Definir el diseño de la aplicación
 app.layout = html.Div(
@@ -964,7 +978,6 @@ def render_content(tab):
                 html.Div(id='tab-content-button'),
                 html.Button('Actualizar datos', id='boton-ejecutar', n_clicks=0, style=button_style),
                 html.Div(
-                    
                     style=styles['filtros'],
                     children=[
                         dcc.Input(id='filtro-municipio', type='text', placeholder='Filtrar municipio', style=styles['filtro']),
@@ -984,6 +997,7 @@ def render_content(tab):
                 html.H1('Diputados federales', style=styles['titulo']),
                 html.Div(id='tab-content-button'),
                 html.Button('Actualizar datos', id='boton-ejecutar', n_clicks=0, style=button_style),
+            
         html.Div(
             style=styles['filtros'],
             children=[
@@ -1002,7 +1016,6 @@ def render_content(tab):
                 html.H1('Diputados municipales', style=styles['titulo']),
                  html.Div(id='tab-content-button'),
                 html.Button('Actualizar datos', id='boton-ejecutar', n_clicks=0, style=button_style),
-
                 html.Div(
                     style=styles['filtros'],
                     children=[
@@ -1053,10 +1066,10 @@ def filtrar_tabla_pres(filtro_municipio, filtro_municipal, filtro_estado, filtro
         id='tabla-filtrada-pres',
         columns=[{'name': col, 'id': col} for col in df_presidentes.columns],
         data=df_filtrado.to_dict('records'),
+        export_format="csv",
         style_table={'margin': 'auto','width': '80%'},
         style_cell={'textAlign': 'left'},
     )
-
     return tabla_filtrada
 
 
@@ -1090,6 +1103,7 @@ def filtrar_tabla_fed(filtro_nombre, filtro_estado, filtro_partido,filtro_cabece
         id='tabla-filtrada',
         columns=[{'name': col, 'id': col} for col in df_diputados_federales.columns],
         data=df_filtrado.to_dict('records'),
+        export_format="csv",
         style_table={'margin': 'auto','width': '80%'},
         style_cell={'textAlign': 'left'},
     )
@@ -1131,8 +1145,10 @@ def filtrar_tabla_mun(filtro_distrito, filtro_cabecera, filtro_estado, filtro_di
         id='tabla-filtrada-mun',
         columns=[{'name': col, 'id': col} for col in df_diputados_municipales.columns],
         data=df_filtrado.to_dict('records'),
+        export_format="csv",
         style_table={'margin': 'auto','width': '80%'},
         style_cell={'textAlign': 'left'},
+        
     )
 
     return tabla_filtrada
